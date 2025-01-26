@@ -1,0 +1,19 @@
+{
+  "name": "dsl-fcg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsx src/index.ts"
+  },
+  "author": "Francisco Carmona Guerrero",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.14",
+    "tsx": "^4.19.2"
+  }
+}
