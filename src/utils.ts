@@ -116,11 +116,12 @@ export const getValueRecursively = (parsedObj: ParsedExpression, currPath: numbe
         return `VAR_${currNode.value}`;
     };
 
-    // else: @TODO: variables
-
     // else: function
     const functionName = currNode.value;
-    const functionInputs = currNode.inputs;
+    let functionInputs: (ParsedValueType | ParsedFunctionType)[] = [];
+    if ('inputs' in currNode) {
+        functionInputs = currNode.inputs;
+    };
     switch (functionName) {
         case 'CONCAT':
             // for each input run this recursive function
