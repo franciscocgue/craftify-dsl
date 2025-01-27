@@ -81,6 +81,14 @@ export const myParser = (expression: string): ParsedFunctionType => {
 
         }
 
+        if (!' (),'.includes(acc)) {
+            // probably a single-variable expression
+            inputs.push({
+                type: 'variable' as const,
+                value: acc,
+            });
+        }
+
         return inputs;
     };
 

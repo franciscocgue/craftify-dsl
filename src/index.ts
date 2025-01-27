@@ -1,6 +1,11 @@
 import { myParser, getValueRecursively } from "./utils";
 
 const testCases = [
+    'userName',
+    'userName ',
+    ' userName ',
+    'userName  ',
+    '  userName  ',
     'IF(isLoggedIn, CONCAT(" ", "Hey,", username), "Please, log in")',
     'CONCAT(", ", "Hello", UPPER("James"))',
     'CONCAT("","Hello,",CONCAT("---","(1)","(2)"),UPPER("Smidt"),LEN("ihave17characters"))',
