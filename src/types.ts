@@ -11,6 +11,6 @@ export type ParsedFunctionType = {
 }
 
 export type ParsedValueType = {
-    type: "basicValue",
+    type: "basicValue" | "variable",
     value: string | number | boolean,
 }

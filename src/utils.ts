@@ -36,6 +36,7 @@ export const myParser = (expression: string): ParsedFunctionType => {
                     acc = '';
                 }
             } else if (!parsingString) {
+                // function inputs start
                 if (Object.keys(FUNCTION_CONFIG).includes(acc) && (next.value === '(' || next.value === ' ')) {
                     inputs.push({
                         type: 'function' as const,
@@ -43,8 +44,8 @@ export const myParser = (expression: string): ParsedFunctionType => {
                         inputs: [..._helper(false, '')]
                     });
                     acc = '';
-                } else if (next.value === ' ' || next.value === ',') {
-                    // check if boolean or number was just read
+                } else if (next.value === ' ' || next.value === ',' || next.value === ')') {
+                    // boolean / number / variable finished
                     if (acc.toLocaleLowerCase() === 'true' || acc.toLocaleLowerCase() === 'false') {
                         inputs.push({
                             type: 'basicValue' as const,
@@ -56,24 +57,18 @@ export const myParser = (expression: string): ParsedFunctionType => {
                             type: 'basicValue' as const,
                             value: parseFloat(acc.trim()),
                         });
-                    }
-                    acc = '';
-                } else if (next.value === ')') {
-                    // check if boolean or number was just read
-                    if (acc.toLocaleLowerCase() === 'true' || acc.toLocaleLowerCase() === 'false') {
+                    } else if (acc.trim() !== '' && acc.trim() !== '(') {
+                        // add variable
                         inputs.push({
-                            type: 'basicValue' as const,
-                            value: acc.toLocaleLowerCase() === 'true',
-                        });
-                    } else if (!isNaN(parseFloat(acc.trim()))) {
-                        // add number
-                        inputs.push({
-                            type: 'basicValue' as const,
-                            value: parseFloat(acc.trim()),
+                            type: 'variable' as const,
+                            value: acc,
                         });
                     }
                     acc = '';
-                    return inputs;
+                    if (next.value === ')') {
+                        // end of function
+                        return inputs;
+                    }
                 } else {
                     acc += next.value;
                 }
@@ -113,6 +108,12 @@ export const getValueRecursively = (parsedObj: ParsedExpression, currPath: numbe
     // if string, return
     if (currNode.type === 'basicValue') {
         return currNode.value;
+    };
+
+    // if variable, return
+    if (currNode.type === 'variable') {
+        // @TODO: get expression's value from external store
+        return `VAR_${currNode.value}`;
     };
 
     // else: @TODO: variables

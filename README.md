@@ -73,6 +73,7 @@ Only a single root expression is accepted. Its arguments can be
 
 - other, nested expressions
 - string surrounded by double quotes (example: "hey")
+- expressions (similar to strings but no double quotes)
 - numbers
 - booleans (true / false)
 
