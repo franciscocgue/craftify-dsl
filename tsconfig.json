@@ -1,0 +1,10 @@
+// note: required for jest; use `npx tsx` for dev
+
+{
+    "compilerOptions": {
+        "module": "commonjs", // Jest works best with CommonJS modules.
+        "esModuleInterop": true, // Required for ESM imports compatibility.
+        "strict": true, // Optional, but recommended for TypeScript.
+        "skipLibCheck": true // Speeds up the build by skipping type checks in libraries.
+    }
+}
