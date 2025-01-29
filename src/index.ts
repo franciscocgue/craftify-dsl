@@ -1,4 +1,4 @@
-import { myParser, getValueRecursively } from "./utils";
+import { myParser, getValue } from "./utils";
 
 const testCases = [
     'userName',
@@ -30,7 +30,7 @@ const testCases = [
 
 for (let testCase of testCases) {
     const parsedObj = myParser(testCase);
-    const result = getValueRecursively(parsedObj, [])
+    const result = getValue(parsedObj, [])
     console.log({
         test: testCase,
         result: result,

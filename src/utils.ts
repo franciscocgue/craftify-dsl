@@ -106,7 +106,7 @@ export const myParser = (expression: string): ParsedFunctionType => {
 // Use before finding value;
 // USE CASE: let user know if input is valid in real time
 
-export const getValueRecursively = (parsedObj: ParsedExpression, currPath: number[]): any => {
+export const getValue = (parsedObj: ParsedExpression, currPath: number[]): any => {
 
     // get current node
     let currNode: ParsedExpression | ParsedFunctionType | ParsedValueType = cloneDeep(parsedObj);
@@ -140,85 +140,85 @@ export const getValueRecursively = (parsedObj: ParsedExpression, currPath: numbe
             // first argument is separator
             const numberOfStandardParams = 1; // separator
             return functionInputs.slice(numberOfStandardParams).map((input, idx: number) => {
-                return getValueRecursively(parsedObj, [...currPath, idx + numberOfStandardParams]);
+                return getValue(parsedObj, [...currPath, idx + numberOfStandardParams]);
             }).join(functionInputs[0].value as string);
         case 'UPPER':
             if (functionInputs.length > 1) {
                 throw new Error(`Function "${functionName}" accepts only one argument`)
             }
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).toUpperCase();
+            return String(getValue(parsedObj, [...currPath, 0])).toUpperCase();
         case 'LOWER':
             if (functionInputs.length > 1) {
                 throw new Error(`Function "${functionName}" accepts only one argument`)
             }
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).toLowerCase();
+            return String(getValue(parsedObj, [...currPath, 0])).toLowerCase();
         case 'SUBSTITUTE':
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).replace(
-                String(getValueRecursively(parsedObj, [...currPath, 1])),
-                String(getValueRecursively(parsedObj, [...currPath, 2]))
+            return String(getValue(parsedObj, [...currPath, 0])).replace(
+                String(getValue(parsedObj, [...currPath, 1])),
+                String(getValue(parsedObj, [...currPath, 2]))
             );
         case 'LEN':
             if (functionInputs.length > 1) {
                 throw new Error(`Function "${functionName}" accepts only one argument`)
             }
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).length;
+            return String(getValue(parsedObj, [...currPath, 0])).length;
         case 'TRIM':
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).trim();
+            return String(getValue(parsedObj, [...currPath, 0])).trim();
         case 'RIGHT':
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).slice(
-                -1 * parseInt(getValueRecursively(parsedObj, [...currPath, 1]))
+            return String(getValue(parsedObj, [...currPath, 0])).slice(
+                -1 * parseInt(getValue(parsedObj, [...currPath, 1]))
             );
         case 'LEFT':
-            return String(getValueRecursively(parsedObj, [...currPath, 0])).slice(
+            return String(getValue(parsedObj, [...currPath, 0])).slice(
                 0,
-                parseInt(getValueRecursively(parsedObj, [...currPath, 1]))
+                parseInt(getValue(parsedObj, [...currPath, 1]))
             );
         case 'SUM':
             return functionInputs.reduce((acc, curr, idx: number) => {
-                return acc + getValueRecursively(parsedObj, [...currPath, idx]);
+                return acc + getValue(parsedObj, [...currPath, idx]);
             }, 0);
         case 'MULTIPLY':
             return functionInputs.slice(1).reduce((acc, curr, idx: number) => {
-                return acc * getValueRecursively(parsedObj, [...currPath, idx + 1]);
-            }, getValueRecursively(parsedObj, [...currPath, 0]));
+                return acc * getValue(parsedObj, [...currPath, idx + 1]);
+            }, getValue(parsedObj, [...currPath, 0]));
         case 'DIVIDE':
             return functionInputs.slice(1).reduce((acc, curr, idx: number) => {
-                return acc / getValueRecursively(parsedObj, [...currPath, idx + 1]);
-            }, getValueRecursively(parsedObj, [...currPath, 0]));
+                return acc / getValue(parsedObj, [...currPath, idx + 1]);
+            }, getValue(parsedObj, [...currPath, 0]));
         case 'AVERAGE':
             return functionInputs.reduce((acc, curr, idx: number) => {
-                return acc + getValueRecursively(parsedObj, [...currPath, idx]);
+                return acc + getValue(parsedObj, [...currPath, idx]);
             }, 0) / functionInputs.length;
         case 'ROUND':
-            const val = getValueRecursively(parsedObj, [...currPath, 0]);
-            const roundDigits = getValueRecursively(parsedObj, [...currPath, 1]);
+            const val = getValue(parsedObj, [...currPath, 0]);
+            const roundDigits = getValue(parsedObj, [...currPath, 1]);
             const factor = Math.pow(10, roundDigits);
             return Math.round(val * factor) / factor;
         case 'IF':
-            const condition = getValueRecursively(parsedObj, [...currPath, 0]);
+            const condition = getValue(parsedObj, [...currPath, 0]);
             if (condition) {
-                return getValueRecursively(parsedObj, [...currPath, 1]);
+                return getValue(parsedObj, [...currPath, 1]);
             } else {
-                return getValueRecursively(parsedObj, [...currPath, 2])
+                return getValue(parsedObj, [...currPath, 2])
             };
         case 'NOT':
-            return !getValueRecursively(parsedObj, [...currPath, 0]);
+            return !getValue(parsedObj, [...currPath, 0]);
         case 'IS_HIGHER':
-            return getValueRecursively(parsedObj, [...currPath, 0]) >
-                getValueRecursively(parsedObj, [...currPath, 1]);
+            return getValue(parsedObj, [...currPath, 0]) >
+                getValue(parsedObj, [...currPath, 1]);
         case 'IS_LOWER':
-            return getValueRecursively(parsedObj, [...currPath, 0]) <
-                getValueRecursively(parsedObj, [...currPath, 1]);
+            return getValue(parsedObj, [...currPath, 0]) <
+                getValue(parsedObj, [...currPath, 1]);
         case 'IS_EQUAL':
-            return getValueRecursively(parsedObj, [...currPath, 0]) ===
-                getValueRecursively(parsedObj, [...currPath, 1]);
+            return getValue(parsedObj, [...currPath, 0]) ===
+                getValue(parsedObj, [...currPath, 1]);
         case 'AND':
             return functionInputs.reduce((acc, curr, idx: number) => {
-                return acc && getValueRecursively(parsedObj, [...currPath, idx]);
+                return acc && getValue(parsedObj, [...currPath, idx]);
             }, true);
         case 'OR':
             return functionInputs.reduce((acc, curr, idx: number) => {
-                return acc || getValueRecursively(parsedObj, [...currPath, idx]);
+                return acc || getValue(parsedObj, [...currPath, idx]);
             }, false);
         default:
             throw new Error(`Function "${functionName}" does not exists`)
